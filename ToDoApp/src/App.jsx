@@ -5,8 +5,24 @@ function App() {
   const [input, setInput] = useState("")
 
   function addTodo(){
-    setTodos([...todos, input]);
+    setTodos([...todos, {text: input, done: false}]);
     setInput("")
+  }
+
+  function toggleTodo(index) {
+    setTodos(
+      todos.map((todo, i) => 
+        i === index
+          ? { ...todo, done: !todo.done }
+          : todo
+      )
+    );  
+  }
+
+  function deleteTodo(index) {
+    setTodos(
+      todos.filter((todo, i) => i !== index)
+    );
   }
 
   return (
@@ -27,7 +43,15 @@ function App() {
 
       <ul>
         {todos.map((todo, index) => (
-          <li key={index}>{todo}</li>
+          <li 
+          key={index}
+          onClick={() => toggleTodo(index)}
+          style={{
+            textDecoration: todo.done ? "line-through" : "none"
+          }} >
+            {todo.text} 
+          <button onClick={() => deleteTodo(index)}>Delete</button>
+          </li>
         ))}
       </ul>
     </div>
