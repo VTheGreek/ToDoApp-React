@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import "./App.css";
 
 function App() {
-  const [todos, setTodos] = useState([])
+  const [todos, setTodos] = useState(
+    JSON.parse(localStorage.getItem("todos")) || []
+  );
   const [input, setInput] = useState("")
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos))
+  }, [todos]);
 
   function addTodo(){
     setTodos([...todos, {text: input, done: false}]);
@@ -27,8 +34,9 @@ function App() {
 
   return (
     <div>
+      <div className="app">
       <h1>To Do App</h1>
-
+    <div className="input-row">
       <input 
       type="text"
       value={input}
@@ -40,6 +48,7 @@ function App() {
       onClick={addTodo}>
         Add  
       </button>
+      </div>
 
       <ul>
         {todos.map((todo, index) => (
@@ -50,10 +59,17 @@ function App() {
             textDecoration: todo.done ? "line-through" : "none"
           }} >
             {todo.text} 
-          <button onClick={() => deleteTodo(index)}>Delete</button>
+          <button onClick={(e) => {
+            e.stopPropagation();
+            deleteTodo(index);
+          }}
+          >
+            Delete
+            </button>
           </li>
         ))}
       </ul>
+      </div>
     </div>
   );
 }
